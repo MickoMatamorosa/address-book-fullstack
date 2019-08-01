@@ -18,7 +18,6 @@ exports.up = (pgm) => {
     },
     group_id: {
       type: 'integer',
-      notNull: true,
       references: '"groups"'
     },
   });

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -40,6 +42,20 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignIn() {
   const classes = useStyles();
+  const [ username, setUsername ] = useState('')
+  const [ password, setPassword ] = useState('')
+
+  const submit = e => {
+    e.preventDefault();
+    axios.post('/', {
+      username, password,
+    }).then((response) => {
+        window.location = "/addressbook"
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -51,7 +67,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={submit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -62,6 +78,8 @@ export default function SignIn() {
             name="username"
             autoComplete="username"
             autoFocus
+            onChange={e => setUsername(e.target.value )}
+            value={username}
           />
           <TextField
             variant="outlined"
@@ -73,6 +91,8 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={e => setPassword(e.target.value )}
+            value={password}
           />
           <Button
             type="submit"

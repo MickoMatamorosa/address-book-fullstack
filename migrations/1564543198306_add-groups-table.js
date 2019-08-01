@@ -9,12 +9,7 @@ exports.up = (pgm) => {
     group_name: {
       type: 'text',
       notNull: true,
-    },
-    member_id: {
-      type: 'integer',
-      notNull: true,
-      references: '"users"'
-    },
+    }
   });
 };
 

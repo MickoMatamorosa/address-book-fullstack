@@ -17,9 +17,7 @@ massive({
   app.use(cors());
   app.use(express.json());
 
-  app.get('/', (req, res) => {
-    res.send("Hello Universe Wan!!!");
-  });
+  app.post('/', users.login);
 
   app.post('/register', users.register);
 
