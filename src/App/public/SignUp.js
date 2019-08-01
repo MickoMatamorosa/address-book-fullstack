@@ -38,8 +38,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignUp() {
+export default function SignUp(props) {
   const classes = useStyles();
+  const { handleChange, regisFields,
+    submit } = props;
+  const { username, password, firstname,
+    lastname, emailAdd } = regisFields
 
   return (
     <Container component="main" maxWidth="xs">
@@ -53,12 +57,14 @@ export default function SignUp() {
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="firstname"
                 variant="outlined"
                 required
                 fullWidth
                 id="firstName"
                 label="First Name"
+                onChange={handleChange}
+                value={firstname}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -68,8 +74,10 @@ export default function SignUp() {
                 fullWidth
                 id="lastName"
                 label="Last Name"
-                name="lastName"
+                name="lastname"
                 autoComplete="lname"
+                onChange={handleChange}
+                value={lastname}
               />
             </Grid>
             <Grid item xs={12}>
@@ -81,6 +89,8 @@ export default function SignUp() {
                 label="Username"
                 name="username"
                 autoFocus
+                onChange={handleChange}
+                value={username}
               />
             </Grid>
             <Grid item xs={12}>
@@ -90,8 +100,10 @@ export default function SignUp() {
                 fullWidth
                 id="email"
                 label="Email Address"
-                name="email"
+                name="emailAdd"
                 autoComplete="email"
+                onChange={handleChange}
+                value={emailAdd}
               />
             </Grid>
             <Grid item xs={12}>
@@ -104,6 +116,8 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={handleChange}
+                value={password}
               />
             </Grid>
           </Grid>
@@ -113,6 +127,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onSubmit={submit}
           >Sign Up</Button>
           <Grid container justify="flex-end">
             <Grid item>
