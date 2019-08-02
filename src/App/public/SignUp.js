@@ -42,17 +42,13 @@ const useStyles = makeStyles(theme => ({
 export default function SignUp(props) {
   const classes = useStyles();
 
-  const { history } = props
-  const [ firstname, setFirstname ] = useState('')
-  const [ lastname, setLastname ] = useState('')
-  const [ emailAdd, setEmailAdd ] = useState('')
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
 
   const submit = e => {
     e.preventDefault();
     axios.post('/register', {
-      firstname, lastname, emailAdd, username, password,
+      username, password
     }).then((response) => {
         console.log(response);
         window.location = '/'
@@ -72,45 +68,6 @@ export default function SignUp(props) {
         </Avatar>
         <Typography component="h1" variant="h5">Sign up</Typography>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstname"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                onChange={e => setFirstname(e.target.value)}
-                value={firstname}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastname"
-                autoComplete="lname"
-                onChange={e => setLastname(e.target.value)}
-                value={lastname}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="emailAdd"
-                autoComplete="email"
-                onChange={e => setEmailAdd(e.target.value)}
-                value={emailAdd}
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"

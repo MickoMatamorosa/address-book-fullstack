@@ -5,8 +5,7 @@ const secret = require('../secretToken.js');
 function register(req, res) {
   const db = req.app.get('db');
 
-  const { username, password, firstname, 
-      lastname, emailAdd } = req.body;
+  const { username, password } = req.body;
 
   argon2
   .hash(password)
@@ -20,19 +19,10 @@ function register(req, res) {
     );
   })
   .then(user => {
-    // add contacts
-    db.contacts.insert({
-      fisrt_name: firstname,
-      last_name: lastname,
-      email: emailAdd
-      },{ fields: ['id'] })
-      .then(contact => {
-        // address book FKs
-        db.address_book.insert({
-          user_id: user.id,
-          contacts_id: contact.id
-      })
-    });
+    // address book FKs
+    db.addressbook.insert({
+      user_id: user.id,
+    })
 
     const token = jwt.sign({ userId: user.id }, secret); // adding token generation
     res.status(201).json({ ...user, token });
@@ -79,7 +69,21 @@ function login(req, res) {
   });
 }
 
+function addressbook(req, res){
+  const db = req.app.get('db');
+  const user_id = parseInt(req.params.uabid)
+  
+  db.addressbook
+    .find({user_id})
+    .then(post => res.status(200).json(post))
+    .catch(err => {
+      console.error(err);
+      res.status(500).end();
+    });
+}
+
 module.exports = {
   register,
   login,
+  addressbook,
 };

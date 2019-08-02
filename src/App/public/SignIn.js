@@ -49,8 +49,15 @@ export default function SignIn() {
     e.preventDefault();
     axios.post('/', {
       username, password,
-    }).then((response) => {
-        window.location = "/addressbook"
+    }).then((res) => {
+        axios.get(`/login/addressbook/${res.data.id}`)
+          .then((abRes) => {
+            res.data.abid = abRes.data[0].id
+            localStorage.setItem('user', JSON.stringify(res.data))
+            window.location = "/addressbook"
+          }).catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);

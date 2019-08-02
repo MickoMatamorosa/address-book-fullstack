@@ -3,6 +3,7 @@ const massive = require('massive');
 const cors = require('cors');
 
 const users = require('./controllers/users');
+const ab = require('./controllers/addressbook');
 
 massive({
   host: 'localhost',
@@ -20,6 +21,12 @@ massive({
   app.post('/', users.login);
 
   app.post('/register', users.register);
+
+  app.get('/login/addressbook/:uabid', users.addressbook);
+
+  app.post('/ab/create', ab.createContacts);
+
+  app.get('/addressbook', ab.allContacts);
 
   const PORT = 3002;
   
