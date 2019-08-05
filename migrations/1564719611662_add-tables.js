@@ -16,17 +16,6 @@ exports.up = (pgm) => {
     },
   });
 
-  pgm.createTable('groups', {
-    id: {
-      type: 'serial',
-      primaryKey: true,
-    },
-    group_name: {
-      type: 'text',
-      notNull: true,
-    }
-  });
-
   pgm.createTable('addressbook', {
     id: {
       type: 'serial',
@@ -80,9 +69,24 @@ exports.up = (pgm) => {
       type: 'integer',
       references: '"addressbook"'
     },
-    group_id: {
+  });
+
+  pgm.createTable('groups', {
+    id: {
+      type: 'serial',
+      primaryKey: true,
+    },
+    group_name: {
+      type: 'text',
+      notNull: true,
+    },
+    addressbook_id: {
       type: 'integer',
       references: '"groups"'
+    },
+    contacts_id: {
+      type: 'integer',
+      references: '"contacts"'
     },
   });
 };

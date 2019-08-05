@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios'
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -45,11 +42,14 @@ export default function SignIn() {
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
 
+  const redirectToHome = () => location = '/addressbook'
+
+  localStorage.getItem('user') && redirectToHome()
+
   const submit = e => {
     e.preventDefault();
-    axios.post('/', {
-      username, password,
-    }).then((res) => {
+    axios.post('/', { username, password })
+      .then((res) => {
         axios.get(`/login/addressbook/${res.data.id}`)
           .then((abRes) => {
             res.data.abid = abRes.data[0].id
@@ -107,13 +107,12 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
-          >
-            Sign In
+          > Sign In
           </Button>
           <Grid container>
             <Grid item>
               <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+                Don't have an account? Sign Up
               </Link>
             </Grid>
           </Grid>

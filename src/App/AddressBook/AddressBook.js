@@ -9,20 +9,21 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import ContactItem from './components/ContactItem';
 import TblHeader from './components/TblHeader';
 import Header from './components/Header';
-import Create from './components/Create';
 import Form from './components/Form';
 
 export default class AddressBook extends Component {
   state = {
+    loading: false,
     contacts: [],
-    create: false,
-    update: false,
-    delete: false,
+    formType: '',
+    submit: null,
     activeFields: {
+      id: '',
       first_name: '',
       last_name: '',
       home_phone: '',
@@ -38,140 +39,161 @@ export default class AddressBook extends Component {
   }
 
   componentDidMount(){
-    this.setState({
-      emptyFields: this.state.activeFields
-    })
-
-    axios.get('/addressbook')
-      .then(res => {
-        this.setState({
-          contacts: res.data
+    const { abid, token } = JSON.parse(localStorage.getItem('user'));
+    if(!abid) location = '/'
+    else {
+      this.setState({ loading: true })
+      axios.get(`/contacts/${abid}`, {
+          headers: {"Authorization": `Bearer ${token}`}
         })
-      })
+        .then(res => {
+          this.setState({
+            contacts: res.data,
+            emptyFields: this.state.activeFields,
+            loading: false
+          })
+        })
+    }
+  }
+
+  refreshAddressBook = () => {
+    const { abid, token } = JSON.parse(localStorage.getItem('user'));
+    if(!abid) location = '/'
+    else {
+      axios.get(`/contacts/${abid}`, {
+          headers: {"Authorization": `Bearer ${token}`}
+        })
+        .then(res => {
+          this.setState({
+            formType: '',
+            contacts: res.data,
+            activeFields: this.state.emptyFields
+          })
+        })
+    }
   }
 
   handleActiveFieldsChange = e => {
-    const copyActiveFields = this.state.activeFields;
+    const copyActiveFields = { ...this.state.activeFields };
     const { name, value } = e.target;
     copyActiveFields[name] = value;
+    this.setState({ activeFields: copyActiveFields })
+  }
+
+  saveCreate = e => {
+    e.preventDefault();
+    const { abid, token } = JSON.parse(localStorage.getItem('user'));
+    const data = { ...this.state.activeFields, addressbook_id: abid };
+    axios.post('/ab/create', data, {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
+      .then(res => { this.refreshAddressBook() })
+  }
+
+  updateContact = e => {
+    e.preventDefault();
+    const { token } = JSON.parse(localStorage.getItem('user'));
+    const { id } = this.state.activeFields
+    axios.patch(`/Contacts/update/${id}`, { ...this.state.activeFields }, {
+        headers: {"Authorization": `Bearer ${token}`}
+      })
+      .then(res => { this.refreshAddressBook() })
+  }
+
+  deleteContact = e => {
+    e.preventDefault();
+    const { token } = JSON.parse(localStorage.getItem('user'));
+    const { id } = this.state.activeFields
+    axios.delete(`/Contacts/delete/${id}`, {
+        headers: {"Authorization": `Bearer ${token}`}
+      })
+      .then(res => { this.refreshAddressBook() })
+  }
+
+  createBtn = () => {
     this.setState({
-      activeFields: copyActiveFields
+      activeFields: this.state.emptyFields,
+      formType: 'create',
+      submit: this.saveCreate,
     })
   }
 
-  saveCreate = () => {
-    const abid = JSON.parse(localStorage.getItem('user')).abid;
-    const data = { ...this.state.activeFields, addressbook_id: abid };
-    axios.post('/ab/create', data)
-      .then(res => {
-        this.setState({
-          create: !this.state.create,
-          activeFields: this.emptyFields
-        })
-        axios.get('/addressbook')
-          .then(res => {
-            this.setState({
-              contacts: res.data
-            })
-          })
-      })
+  updateBtn = id => {
+    const selectedFields = { ...this.state.contacts.find(c => c.id === id) }
+    this.setState({
+      activeFields: selectedFields,
+      formType: 'update',
+      submit: this.updateContact,
+    })
   }
 
-  createContact = () => {
+  deleteBtn = id => {
+    const selectedFields = { ...this.state.contacts.find(c => c.id === id) }
     this.setState({
-      activeFields: this.state.emptyFields,
-      create: true,
-      update: false,
-      delete: false
+      activeFields: selectedFields,
+      formType: 'delete',
+      submit: this.deleteContact,
     })
   }
 
   cancelActive = () => {
     this.setState({
       activeFields: this.state.emptyFields,
-      create: false,
-      update: false,
-      delete: false
+      formType: '',
     })
   }
 
-  updateBtn = () => {
-    console.log('update')
-    this.setState({
-      create: false,
-      update: true,
-      delete: false
-    })
-  }
-
-  deleteBtn = () => {
-    console.log('delete')
-    this.setState({
-      create: false,
-      update: false,
-      delete: true
-    })
-  }
-
-  updateContact = () => {
-    
-  }
-
-  deleteContact = () => {
-    
+  logout = () => {
+    localStorage.removeItem('user');
+    location = '/'
   }
 
   render() {
+    !localStorage.getItem('user') && this.logout()
+
     return (
       <Fragment>
-        {
-          (this.state.update || this.state.delete) && 
+        { this.state.formType && 
           <Form
             fields={this.state.activeFields}
             handleChange={this.handleActiveFieldsChange}
-            update={this.state.update}
-            delete={this.state.delete}
-            updateFn={this.updateContact}
-            deleteFn={this.deleteContact}
+            submit={this.state.submit}
             cancel={this.cancelActive}
+            formType={this.state.formType}
           />
         }
         <Container maxWidth="xl">
           <Grid container>
             <Grid item xs={12}>
               <Header 
-                create={this.state.create}
-                createFn={this.createContact}
+                createBtn={this.createBtn}
+                logout={this.logout}
               />
             </Grid>
             <Grid item xs={12}>
-              <Table>
-                <TblHeader />
-                <TableBody>
-                  {
-                    this.state.create && 
-                    <Create
-                      fields={this.state.activeFields}
-                      handleChange={this.handleActiveFieldsChange}
-                      save={this.saveCreate}
-                      cancel={this.cancelActive}
-                    />
-                  }{
-                    this.state.contacts.map(contact => {
-                      return <ContactItem 
-                        key={contact.id} 
-                        contact={contact} 
-                        updateBtn={this.updateBtn}
-                        deleteBtn={this.deleteBtn}
-                      />
-                    })
-                  }
-                </TableBody>
-              </Table>
+              {
+                this.state.loading
+                ? (<CircularProgress />)
+                : (<Table>
+                    <TblHeader />
+                    <TableBody>
+                      { this.state.contacts.map(contact => {
+                          return <ContactItem 
+                            key={contact.id} 
+                            contact={contact} 
+                            updateBtn={this.updateBtn}
+                            deleteBtn={this.deleteBtn}
+                          />
+                        })
+                      }
+                    </TableBody>
+                  </Table>
+                )
+              }
             </Grid>
           </Grid>
         </Container>
       </Fragment>
     );
   }
-} 
+}

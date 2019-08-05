@@ -45,6 +45,10 @@ export default function SignUp(props) {
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
 
+  const redirectToHome = () => location = '/addressbook'
+
+  localStorage.getItem('user') && redirectToHome()
+
   const submit = e => {
     e.preventDefault();
     axios.post('/register', {
