@@ -79,6 +79,7 @@ exports.up = (pgm) => {
     group_name: {
       type: 'text',
       notNull: true,
+      unique: true,
     },
     addressbook_id: {
       type: 'integer',

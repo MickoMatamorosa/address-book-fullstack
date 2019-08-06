@@ -3,22 +3,17 @@ import axios from 'axios';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
 
-import ContactItem from './components/ContactItem';
-import TblHeader from './components/TblHeader';
 import Header from './components/Header';
 import Form from './components/Form';
+import ContactsView from './components/ContactsView';
 
 export default class AddressBook extends Component {
   state = {
     loading: false,
+    sort: 'ASC',
+    search: '',
     contacts: [],
     formType: '',
     submit: null,
@@ -39,11 +34,12 @@ export default class AddressBook extends Component {
   }
 
   componentDidMount(){
+    const { sort, search } = this.state;
     const { abid, token } = JSON.parse(localStorage.getItem('user'));
     if(!abid) location = '/'
     else {
       this.setState({ loading: true })
-      axios.get(`/contacts/${abid}`, {
+      axios.get(`/contacts/${abid}/${sort}/${search}`, {
           headers: {"Authorization": `Bearer ${token}`}
         })
         .then(res => {
@@ -56,18 +52,27 @@ export default class AddressBook extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.search !== this.state.search){
+      this.refreshAddressBook();
+    }
+  }
+
   refreshAddressBook = () => {
+    const { sort, search } = this.state;
     const { abid, token } = JSON.parse(localStorage.getItem('user'));
     if(!abid) location = '/'
     else {
-      axios.get(`/contacts/${abid}`, {
+      this.setState({ loading: true })
+      axios.get(`/contacts/${abid}/${sort}/${search}`, {
           headers: {"Authorization": `Bearer ${token}`}
         })
         .then(res => {
           this.setState({
             formType: '',
             contacts: res.data,
-            activeFields: this.state.emptyFields
+            activeFields: this.state.emptyFields,
+            loading: false
           })
         })
     }
@@ -143,6 +148,16 @@ export default class AddressBook extends Component {
     })
   }
 
+  sortFn = sort => {
+    this.setState({ sort })
+    this.refreshAddressBook()
+  }
+
+  searchHandleChange = e => {
+    const { value } = e.target;
+    this.setState({ search: value })
+  }
+
   logout = () => {
     localStorage.removeItem('user');
     location = '/'
@@ -162,36 +177,32 @@ export default class AddressBook extends Component {
             formType={this.state.formType}
           />
         }
-        <Container maxWidth="xl">
-          <Grid container>
-            <Grid item xs={12}>
-              <Header 
-                createBtn={this.createBtn}
-                logout={this.logout}
-              />
+        <Container maxWidth='lg' >
+          <Paper style={{
+            minHeight: '100vh',
+            overflow: 'auto'
+          }}>
+            <Grid container>
+              <Grid item xs={12}>
+                <Header 
+                  createBtn={this.createBtn}
+                  logout={this.logout}
+                  search={this.state.search}
+                  searchFn={this.searchHandleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ContactsView
+                  loading={this.state.loading}
+                  sort={this.state.sort} 
+                  sortFn={this.sortFn}
+                  contacts={this.state.contacts}
+                  updateBtn={this.updateBtn}
+                  deleteBtn={this.deleteBtn}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              {
-                this.state.loading
-                ? (<CircularProgress />)
-                : (<Table>
-                    <TblHeader />
-                    <TableBody>
-                      { this.state.contacts.map(contact => {
-                          return <ContactItem 
-                            key={contact.id} 
-                            contact={contact} 
-                            updateBtn={this.updateBtn}
-                            deleteBtn={this.deleteBtn}
-                          />
-                        })
-                      }
-                    </TableBody>
-                  </Table>
-                )
-              }
-            </Grid>
-          </Grid>
+          </Paper>
         </Container>
       </Fragment>
     );

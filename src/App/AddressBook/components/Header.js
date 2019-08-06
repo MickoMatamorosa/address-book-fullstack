@@ -5,6 +5,8 @@ import { InputBase, Typography, Fab, Grid } from '@material-ui/core/';
 import AddIcon from '@material-ui/icons/Add';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import SearchIcon from '@material-ui/icons/Search';
+import Group from '@material-ui/icons/Group';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -56,42 +58,49 @@ export default function Header(props){
     <Grid container
       direction="row"
       justify="space-evenly"
-      alignItems="center"
+      alignItems="baseline"
       className={classes.header}
     >
-      <Grid item xs={4}>
+      <Grid item xs={12} md={5}>
         <Typography variant="h2" gutterBottom>Address Book</Typography>
       </Grid>
-      <Grid item xs={8}>
+      <Grid item xs={12} md={7}>
         <Grid container
           direction="row"
           justify="flex-end"
           alignItems="baseline"
         >
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+          <Grid item xs='auto'>
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ 'aria-label': 'search' }}
+                value={props.search}
+                onChange={props.searchFn}
+              />
             </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-          <Fab 
-            variant="extended" 
-            color="primary" 
-            aria-label="add" 
-            onClick={props.createBtn} >
-            <AddIcon /> Create
-          </Fab>
-          <ExitToApp 
-            color="error" 
-            onClick={props.logout}
-          />
+          </Grid>
+          <Grid item xs='auto'>
+            <Fab 
+              variant="extended" 
+              color="primary" 
+              aria-label="add" 
+              onClick={props.createBtn} >
+              <AddIcon /> Create
+            </Fab>
+          </Grid>
+          <Grid item xs='auto'>
+            <IconButton onClick={props.logout}>
+              <ExitToApp color="error"/>
+            </IconButton>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>

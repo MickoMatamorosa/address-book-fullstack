@@ -12,6 +12,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -41,6 +46,7 @@ export default function SignIn() {
   const classes = useStyles();
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
+  const [ loginErr, setLoginErr ] = useState(false)
 
   const redirectToHome = () => location = '/addressbook'
 
@@ -55,18 +61,26 @@ export default function SignIn() {
             res.data.abid = abRes.data[0].id
             localStorage.setItem('user', JSON.stringify(res.data))
             window.location = "/addressbook"
-          }).catch((error) => {
-            console.log(error);
           });
       })
       .catch((error) => {
-        console.log(error);
+        setLoginErr(true)
+        setPassword('')
       });
   }
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+        <Dialog open={ loginErr } onClose={ () => setLoginErr(false) } aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Log-In Error!</DialogTitle>
+        <DialogContent>
+            Invalid Username or Password!
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={ () => setLoginErr(false) } color="primary">Ok</Button>
+        </DialogActions>
+      </Dialog>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon/>

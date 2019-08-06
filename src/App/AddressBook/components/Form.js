@@ -37,100 +37,110 @@ export default function Form(props){
     <Dialog open={ formType !== '' } onClose={ cancel } aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{ dialogTitle }</DialogTitle>
         <DialogContent>
-          <TextField fullWidth required
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="Firstname"
-            margin="dense"
-            name='first_name'
-            value={first_name}
-            onChange={handleChange}
-          />
-          <TextField fullWidth
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="Lastname"
-            margin="dense"
-            name='last_name'
-            value={last_name}
-            onChange={handleChange}
-          />
-          <TextField fullWidth
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="Home Phone"
-            margin="dense"
-            name='home_phone'
-            value={home_phone}
-            onChange={handleChange}
-          />
-          <TextField fullWidth
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="Mobile Phone"
-            margin="dense"
-            name='mobile_phone'
-            value={mobile_phone}
-            onChange={handleChange}
-          />
-          <TextField fullWidth
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="Work Phone"
-            margin="dense"
-            name='work_phone'
-            value={work_phone}
-            onChange={handleChange}
-          />
-          <TextField fullWidth
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="Email Address"
-            margin="dense"
-            name='email'
-            value={email}
-            onChange={handleChange}
-          />
-          <TextField fullWidth
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="City"
-            margin="dense"
-            name='city'
-            value={city}
-            onChange={handleChange}
-          />
-          <TextField fullWidth
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="State or Province"
-            margin="dense"
-            name='state_or_province'
-            value={state_or_province}
-            onChange={handleChange}
-          />
-          <TextField fullWidth
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="Postal Code"
-            margin="dense"
-            name='postal_code'
-            value={postal_code}
-            onChange={handleChange}
-          />
-          <TextField fullWidth
-            disabled={formType==='delete'}
-            id="standard-dense"
-            label="Country"
-            margin="dense"
-            name='country'
-            value={country}
-            onChange={handleChange}
-          />
+          {
+            formType==='delete'
+            ? `Are you sure you want to delete ${first_name}'s contact?`
+            : <Fragment>
+                <TextField fullWidth required
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="Firstname"
+                  margin="dense"
+                  name='first_name'
+                  value={first_name}
+                  onChange={handleChange}
+                />
+                <TextField fullWidth
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="Lastname"
+                  margin="dense"
+                  name='last_name'
+                  value={last_name}
+                  onChange={handleChange}
+                />
+                <TextField fullWidth
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="Home Phone"
+                  margin="dense"
+                  name='home_phone'
+                  value={home_phone}
+                  onChange={handleChange}
+                />
+                <TextField fullWidth
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="Mobile Phone"
+                  margin="dense"
+                  name='mobile_phone'
+                  value={mobile_phone}
+                  onChange={handleChange}
+                />
+                <TextField fullWidth
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="Work Phone"
+                  margin="dense"
+                  name='work_phone'
+                  value={work_phone}
+                  onChange={handleChange}
+                />
+                <TextField fullWidth
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="Email Address"
+                  margin="dense"
+                  name='email'
+                  value={email}
+                  onChange={handleChange}
+                />
+                <TextField fullWidth
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="City"
+                  margin="dense"
+                  name='city'
+                  value={city}
+                  onChange={handleChange}
+                />
+                <TextField fullWidth
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="State or Province"
+                  margin="dense"
+                  name='state_or_province'
+                  value={state_or_province}
+                  onChange={handleChange}
+                />
+                <TextField fullWidth
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="Postal Code"
+                  margin="dense"
+                  name='postal_code'
+                  value={postal_code}
+                  onChange={handleChange}
+                />
+                <TextField fullWidth
+                  disabled={formType==='delete'}
+                  id="standard-dense"
+                  label="Country"
+                  margin="dense"
+                  name='country'
+                  value={country}
+                  onChange={handleChange}
+                />
+              </Fragment>
+          }
         </DialogContent>
         <DialogActions>
-          <Button onClick={submit} color="primary">{ formType }</Button>
-          <Button onClick={cancel} color="primary">Cancel</Button>
+          <Button variant="contained" onClick={submit} color="primary">
+            { formType==='delete' ? 'Yes' : formType }
+          </Button>
+          <Button variant="contained" onClick={cancel} color="secondary">
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
   )

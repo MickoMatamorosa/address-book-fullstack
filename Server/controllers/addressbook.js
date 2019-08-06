@@ -1,10 +1,12 @@
 function allContacts(req, res){
   const db = req.app.get('db');
-  const addressbook_id = parseInt(req.params.id)
+  const id = parseInt(req.params.id);
+  const sort = req.params.sort;
+  const filter = req.params.filter !== undefined ? req.params.filter : ''
+  const filterQuery = filter && `AND (first_name ~* '^${filter}' OR last_name ~* '^${filter}')`
   
-  db.contacts
-    .find({addressbook_id})
-    .then(post => res.status(200).json(post))
+  db.query(`select * from contacts where addressbook_id=${id} ${filterQuery} group by id order by last_name ${sort}`)
+    .then(ab => res.status(200).json(ab))
     .catch(err => {
       console.error(err);
       res.status(500).end();

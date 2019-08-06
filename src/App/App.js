@@ -1,9 +1,8 @@
-import React, { Component, useEffect } from 'react';
-import axios from 'axios'
+import React, { Component } from 'react';
 import SignIn from './public/SignIn';
 import SignUp from './public/SignUp';
 import AddressBook from './AddressBook/AddressBook';
-import { Route, Link, BrowserRouter as Router, Redirect } from 'react-router-dom'
+import { Route, BrowserRouter as Router } from 'react-router-dom'
 
 export default class App extends Component {
   render() {
