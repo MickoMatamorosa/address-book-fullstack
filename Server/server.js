@@ -40,9 +40,17 @@ massive({
 
   app.delete('/Contacts/delete/:id', ab.deleteContact);
 
-  app.get('/groups/:id', gr.allGroups);
+  app.get('/groups/:abid', gr.allGroups);
 
   app.post('/groups/create', gr.createGroup);
+
+  app.delete('/group/:abid/delete/:gName', gr.deleteGroup);
+
+  app.get('/group/:abid/members/:gName', gr.allGroupMembers);
+
+  app.post('/group/members/add', gr.addGroupMembers);
+
+  app.get('/group/:abid/not-members/:gName', gr.allNotMembers);
 
   const PORT = 3002;
   

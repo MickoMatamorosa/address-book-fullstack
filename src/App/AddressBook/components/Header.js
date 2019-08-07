@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { InputBase, Typography, Fab, Grid } from '@material-ui/core/';
@@ -70,32 +70,36 @@ export default function Header(props){
           justify="flex-end"
           alignItems="baseline"
         >
-          <Grid item xs='auto'>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
-                value={props.search}
-                onChange={props.searchFn}
-              />
-            </div>
-          </Grid>
-          <Grid item xs='auto'>
-            <Fab 
-              variant="extended" 
-              color="primary" 
-              aria-label="add" 
-              onClick={props.createBtn} >
-              <AddIcon /> Create
-            </Fab>
-          </Grid>
+          { !props.groupTab && 
+            <Fragment>
+              <Grid item xs='auto'>
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                    placeholder="Search…"
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput,
+                    }}
+                    inputProps={{ 'aria-label': 'search' }}
+                    value={props.search}
+                    onChange={props.searchFn}
+                  />
+                </div>
+              </Grid>
+              <Grid item xs='auto'>
+                <Fab 
+                  variant="extended" 
+                  color="primary" 
+                  aria-label="add" 
+                  onClick={props.createBtn} >
+                  <AddIcon /> Create
+                </Fab>
+              </Grid>
+            </Fragment>
+          }
           <Grid item xs='auto'>
             <IconButton onClick={props.logout}>
               <ExitToApp color="error"/>

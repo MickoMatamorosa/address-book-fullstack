@@ -12,11 +12,13 @@ import ContactsView from './components/ContactsView';
 export default class AddressBook extends Component {
   state = {
     loading: false,
+    groupTab: false,
     sort: 'ASC',
     search: '',
     contacts: [],
     formType: '',
     submit: null,
+    refresh: 0,
     activeFields: {
       id: '',
       first_name: '',
@@ -158,6 +160,16 @@ export default class AddressBook extends Component {
     this.setState({ search: value })
   }
 
+  refreshGroup = () => {
+    this.setState({
+      refresh: this.state.refresh + 1
+    })
+  }
+
+  handleGroupTab = tab => {
+    this.setState({ groupTab: tab })
+  }
+
   logout = () => {
     localStorage.removeItem('user');
     location = '/'
@@ -189,6 +201,7 @@ export default class AddressBook extends Component {
                   logout={this.logout}
                   search={this.state.search}
                   searchFn={this.searchHandleChange}
+                  groupTab={this.state.groupTab}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -199,6 +212,9 @@ export default class AddressBook extends Component {
                   contacts={this.state.contacts}
                   updateBtn={this.updateBtn}
                   deleteBtn={this.deleteBtn}
+                  refresh={this.state.refresh}
+                  refreshFn={this.refreshGroup}
+                  handleGroupTab={this.handleGroupTab}
                 />
               </Grid>
             </Grid>
