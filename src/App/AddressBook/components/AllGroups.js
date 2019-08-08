@@ -136,6 +136,18 @@ export default class AllGroups extends  Component{
     });
   };
 
+  addContacts = (group_name, contacts) => {
+    const { abid, token } = JSON.parse(localStorage.getItem('user'));
+    const data = { group_name, abid, contacts}
+    axios.post(`/group/members/add`, data, {
+      headers: {"Authorization": `Bearer ${token}`}
+    })
+    .then(res => { 
+      this.props.refreshFn();
+      this.cancel();
+    })
+  }
+
   deleteGroup = e => {
     e.preventDefault();
     const { group_name, addressbook_id } = this.state.selectedGroup
@@ -179,6 +191,7 @@ export default class AllGroups extends  Component{
           openAddMember={openAddMember}
           selectedGroup={selectedGroup}
           cancel={this.cancel}
+          addContacts={this.addContacts}
         />
 
         { groups.map(group => {
@@ -209,6 +222,7 @@ export default class AllGroups extends  Component{
                     sort={sort} 
                     sortFn={sortFn}
                     group_name={group.group_name} 
+                    refresh={this.props.refresh}
                   />
                 </ExpansionPanelDetails>
               </ExpansionPanel>

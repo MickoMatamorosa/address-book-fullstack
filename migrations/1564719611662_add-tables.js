@@ -24,7 +24,8 @@ exports.up = (pgm) => {
     user_id: {
       type: 'integer',
       notNull: true,
-      references: '"users"'
+      references: '"users"',
+      onDelete: 'cascade'
     },
   });
   
@@ -51,7 +52,6 @@ exports.up = (pgm) => {
     },
     email: {
       type: 'text',
-      unique: true
     },
     city: {
       type: 'text',
@@ -67,7 +67,8 @@ exports.up = (pgm) => {
     },
     addressbook_id: {
       type: 'integer',
-      references: '"addressbook"'
+      references: '"addressbook"',
+      onDelete: 'cascade'
     },
   });
 
@@ -83,11 +84,13 @@ exports.up = (pgm) => {
     },
     addressbook_id: {
       type: 'integer',
-      references: '"groups"'
+      references: '"groups"',
+      onDelete: 'cascade'
     },
     contacts_id: {
       type: 'integer',
-      references: '"contacts"'
+      references: '"contacts"',
+      onDelete: 'cascade'
     },
   });
 };

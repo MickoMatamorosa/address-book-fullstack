@@ -46,11 +46,13 @@ massive({
 
   app.delete('/group/:abid/delete/:gName', gr.deleteGroup);
 
-  app.get('/group/:abid/members/:gName', gr.allGroupMembers);
+  app.get('/group/:abid/members/:gName/:sort', gr.allGroupMembers);
 
   app.post('/group/members/add', gr.addGroupMembers);
 
   app.get('/group/:abid/not-members/:gName', gr.allNotMembers);
+
+  app.delete('/group/members/remove/:gid', gr.removeContact);
 
   const PORT = 3002;
   

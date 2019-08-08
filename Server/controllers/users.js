@@ -44,7 +44,6 @@ function login(req, res) {
     { fields: ['id', 'username', 'password'] }
   )
   .then(user => {
-    // console.log("")
     if (!user) throw new Error('Invalid Username or Password');
 
     return argon2.verify(user.password, password).then(valid => {

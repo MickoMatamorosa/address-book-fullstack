@@ -1,4 +1,5 @@
 import React from 'react';
+import Axios from 'axios';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,14 +8,23 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+
 export default function AlertDialog({
   open,
   handleClose,
-  selected
+  selected,
+  refreshFn
 }) {
 
-  const handleRemove = () => {
-
+  function handleRemove(){
+    const { token } = JSON.parse(localStorage.getItem('user'));
+    Axios.delete(`/group/members/remove/${selected.gid}`, {
+      headers: {"Authorization": `Bearer ${token}`}
+    })
+    .then(res => { 
+      refreshFn();
+      handleClose();
+    })
   }
 
   return (
@@ -25,10 +35,10 @@ export default function AlertDialog({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Group Member</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Remove from Group</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to remove "name" from "group"
+            Are you sure you want to remove {selected.first_name}  {selected.last_name} from the group
           </DialogContentText>
         </DialogContent>
         <DialogActions>

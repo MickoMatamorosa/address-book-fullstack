@@ -6,6 +6,7 @@ import Edit from '@material-ui/icons/Edit';
 import Delete from '@material-ui/icons/Delete';
 import Remove from '@material-ui/icons/Remove';
 import { IconButton } from '@material-ui/core';
+import Hidden from '@material-ui/core/Hidden';
 
 export default function ContactItem(props){
   const { contact, updateBtn, deleteBtn, removeBtn } = props,
@@ -16,10 +17,18 @@ export default function ContactItem(props){
     <TableRow>
       <TableCell>{ first_name }</TableCell>
       <TableCell>{ last_name }</TableCell>
-      <TableCell>{ home_phone }</TableCell>
-      <TableCell>{ mobile_phone }</TableCell>
-      <TableCell>{ work_phone }</TableCell>
-      <TableCell>{ email }</TableCell>
+      <Hidden smDown>
+        <TableCell>{ home_phone }</TableCell>
+      </Hidden>
+      <Hidden xsDown>
+        <TableCell>{ mobile_phone }</TableCell>
+      </Hidden>
+      <Hidden smDown>
+        <TableCell>{ work_phone }</TableCell>
+      </Hidden>
+      <Hidden mdDown>
+        <TableCell>{ email }</TableCell>
+      </Hidden>
       <TableCell align="center">
         {
           removeBtn === undefined
@@ -27,7 +36,7 @@ export default function ContactItem(props){
               <IconButton onClick={ () => deleteBtn(id) }><Delete /></IconButton>
               <IconButton onClick={ () => updateBtn(id) }><Edit /></IconButton>
             </Fragment>
-          : <IconButton onClick={ () => deleteBtn(id) }><Remove /></IconButton>
+          : <IconButton onClick={ () => removeBtn(id) }><Remove /></IconButton>
         }
       </TableCell>
     </TableRow>

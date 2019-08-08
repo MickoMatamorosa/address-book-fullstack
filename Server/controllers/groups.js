@@ -30,8 +30,7 @@ function allGroupMembers(req, res){
   const db = req.app.get('db');
   const abid = parseInt(req.params.abid);
   const gName = req.params.gName;
-
-  console.log(abid, gName)
+  const sort = req.params.sort ? req.params.sort : 'ASC' ;
   
   db.query(`select  contacts.id, first_name, last_name, home_phone, 
                     mobile_phone, work_phone, email, groups.id as gid
@@ -41,6 +40,7 @@ function allGroupMembers(req, res){
                     groups.group_name='${gName}' and
                     contacts_id is not null
               group by contacts.id, groups.id
+              order by last_name ${sort}
           `)
     .then(groups => res.status(200).json(groups))
     .catch(err => {
@@ -52,14 +52,12 @@ function allGroupMembers(req, res){
 function addGroupMembers(req, res){
   const db = req.app.get('db');
 
-  const { group_name, addressbook_id, contacts_id } = req.body;
+  const { group_name, abid, contacts } = req.body;
 
-  db.groups.insert({
-    group_name,
-    addressbook_id,
-    contacts_id
-  })
-  .then(group => res.status(201).json(group))
+  const values = contacts.map(val => `('${group_name}','${abid}','${val}')`).join()
+  
+  db.query(`insert into groups (group_name, addressbook_id, contacts_id) values ${values}`)
+  .then(group => res.send("Successful!!"))
   .catch(err => {
     console.error(err);
     res.status(500).end();
@@ -85,18 +83,25 @@ function allNotMembers(req, res){
   const abid = parseInt(req.params.abid);
   const gName = req.params.gName;
 
-  console.log(abid, gName)
-  
-  db.query(`select  contacts.id, first_name, last_name, home_phone, 
-                    mobile_phone, work_phone, email, groups.id as gid
-              from  groups, contacts
-              where groups.contacts_id=contacts.id and 
-                    groups.addressbook_id=${abid} and
-                    groups.group_name='${gName}' and
-                    contacts_id is not null
-              group by contacts.id, groups.id
-          `)
+  db.query(`SELECT c.id, first_name, last_name FROM contacts AS c
+              WHERE NOT EXISTS ( SELECT contacts_id
+                  FROM groups AS g
+                  WHERE g.contacts_id = c.id and g.group_name='${gName}'
+                ) and addressbook_id=${abid};`)
     .then(groups => res.status(200).json(groups))
+    .catch(err => {
+      console.error(err);
+      res.status(500).end();
+    });
+}
+
+function removeContact(req, res){
+  const db = req.app.get('db');
+  const id = req.params.gid;
+
+  db.groups
+    .destroy({id})
+    .then(group => res.status(200).json(group))
     .catch(err => {
       console.error(err);
       res.status(500).end();
@@ -109,5 +114,6 @@ module.exports = {
   allGroupMembers,
   addGroupMembers,
   deleteGroup,
-  allNotMembers
+  allNotMembers,
+  removeContact,
 };

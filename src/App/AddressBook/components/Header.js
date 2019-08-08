@@ -7,6 +7,7 @@ import ExitToApp from '@material-ui/icons/ExitToApp';
 import SearchIcon from '@material-ui/icons/Search';
 import Group from '@material-ui/icons/Group';
 import IconButton from '@material-ui/core/IconButton';
+import Hidden from '@material-ui/core/Hidden';
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -61,10 +62,10 @@ export default function Header(props){
       alignItems="baseline"
       className={classes.header}
     >
-      <Grid item xs={12} md={5}>
+      <Grid item xs={12} sm={12} md={6}>
         <Typography variant="h2" gutterBottom>Address Book</Typography>
       </Grid>
-      <Grid item xs={12} md={7}>
+      <Grid item xs={12} sm={12} md={6}>
         <Grid container
           direction="row"
           justify="flex-end"
@@ -86,6 +87,7 @@ export default function Header(props){
                     inputProps={{ 'aria-label': 'search' }}
                     value={props.search}
                     onChange={props.searchFn}
+                    fullWidth
                   />
                 </div>
               </Grid>
@@ -95,7 +97,8 @@ export default function Header(props){
                   color="primary" 
                   aria-label="add" 
                   onClick={props.createBtn} >
-                  <AddIcon /> Create
+                  <AddIcon /> 
+                  <Hidden mdDown>Create</Hidden>
                 </Fab>
               </Grid>
             </Fragment>

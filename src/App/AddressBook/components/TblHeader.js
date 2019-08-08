@@ -7,6 +7,7 @@ import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
+import Hidden from '@material-ui/core/Hidden';
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -39,10 +40,18 @@ export default function TblHeader({ sort, sortFn }){
               </IconButton>
           }
         </TableCell>
-        <TableCell align="left">Home Phone</TableCell>
-        <TableCell align="left">Mobile Phone</TableCell>
-        <TableCell align="left">Work Phone</TableCell>
-        <TableCell align="left">Email Address</TableCell>
+        <Hidden smDown>
+          <TableCell align="left">Home Phone</TableCell>
+        </Hidden>
+        <Hidden xsDown>
+          <TableCell align="left">Mobile Phone</TableCell>
+        </Hidden>
+        <Hidden smDown>
+          <TableCell align="left">Work Phone</TableCell>
+        </Hidden>
+        <Hidden mdDown>
+          <TableCell align="left">Email Address</TableCell>
+        </Hidden>
         <TableCell align="center">Options</TableCell>
       </TableRow>
     </TableHead>

@@ -13,21 +13,22 @@ export default class GroupMembers extends Component{
     super(props);
     this.state = {
       members: [],
-      open: false,
-      selected: {},
+      openRemoveDialog: false,
+      selectedFields: {},
+      sort: 'ASC'
     }
   }
 
   componentDidMount(){
-    const { members } = this.state;
     const { group_name } = this.props;
+    const { sort } = this.state;
 
     const { abid, token } = JSON.parse(localStorage.getItem('user'));
 
     if(!abid) location = '/'
     else {
       this.setState({ loading: true })
-      axios.get(`/group/${abid}/members/${group_name}`, {
+      axios.get(`/group/${abid}/members/${group_name}/${sort}`, {
           headers: {"Authorization": `Bearer ${token}`}
         })
         .then(res => {
@@ -39,23 +40,47 @@ export default class GroupMembers extends Component{
     }
   }
 
+  componentDidUpdate(props) {
+    const { refresh } = this.props;
+    if (props.refresh !== refresh) {
+      this.refreshMembers();
+    }
+  }
+
+  refreshMembers = sort => {
+    const { group_name } = this.props;
+    
+    const { abid, token } = JSON.parse(localStorage.getItem('user'));
+    axios.get(`/group/${abid}/members/${group_name}/${sort}`, {
+      headers: {"Authorization": `Bearer ${token}`}
+    })
+    .then(res => {
+      this.setState({
+        members: res.data,
+        loading: false,
+        sort
+      })
+    })
+  }
+
   removeBtn = id => {
     const selectedFields = { ...this.state.members.find(c => c.id === id) }
-    // console.log(selectedFields)
-
+    
     this.setState({
-      selectedId: id,
-      open: true
+      selectedFields,
+      openRemoveDialog: true
     })
   }
 
   cancelRemove = () => {
-    this.setState({open: false})
+    this.setState({
+      selectedFields: {},
+      openRemoveDialog: false,
+    })
   }
 
   render(){
-    const { members, open, selectedId } = this.state;
-    const { sort, sortFn } = this.props;
+    const { members, openRemoveDialog, selectedFields, sort } = this.state;
 
     return (
       <Fragment>
@@ -63,14 +88,15 @@ export default class GroupMembers extends Component{
           ? "This group has no member" 
           : <Fragment>
               <RemovePrompt 
-                open={open} 
+                open={openRemoveDialog} 
                 handleClose={this.cancelRemove} 
-                selected={selectedId}
+                refreshFn={this.refreshMembers}
+                selected={selectedFields}
               />
               <Table>
                 <TblHeader 
                   sort={sort} 
-                  sortFn={sortFn}
+                  sortFn={this.refreshMembers}
                 />
                 <TableBody>
                   { members.map(contact => {
@@ -78,6 +104,7 @@ export default class GroupMembers extends Component{
                         key={contact.id}
                         contact={contact}
                         removeBtn={this.removeBtn}
+                        cancel={this.cancelRemove}
                       />
                     })
                   }

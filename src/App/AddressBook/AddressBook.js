@@ -4,6 +4,12 @@ import axios from 'axios';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 import Header from './components/Header';
 import Form from './components/Form';
@@ -19,6 +25,8 @@ export default class AddressBook extends Component {
     formType: '',
     submit: null,
     refresh: 0,
+    errDialog: false,
+    errMsg: '',
     activeFields: {
       id: '',
       first_name: '',
@@ -83,28 +91,58 @@ export default class AddressBook extends Component {
   handleActiveFieldsChange = e => {
     const copyActiveFields = { ...this.state.activeFields };
     const { name, value } = e.target;
-    copyActiveFields[name] = value;
+    copyActiveFields[name] = value.replace(/^ /,'')
+                              .replace(/  /,' ');
+
     this.setState({ activeFields: copyActiveFields })
   }
 
   saveCreate = e => {
     e.preventDefault();
-    const { abid, token } = JSON.parse(localStorage.getItem('user'));
-    const data = { ...this.state.activeFields, addressbook_id: abid };
-    axios.post('/ab/create', data, {
-        headers: { "Authorization": `Bearer ${token}` }
+    const { activeFields } = this.state;
+
+    if(activeFields.first_name===''){
+      this.setState({
+        errDialog: true,
+        errMsg: "First Name must be not empty!"
       })
-      .then(res => { this.refreshAddressBook() })
+    }else if(!activeFields.email.trim().match(/^([\.\w]{3,}@[a-zA-Z0-9]{3,}\.[a-zA-Z0-9]{2,}|)$/)){
+      this.setState({
+        errDialog: true,
+        errMsg: "Invalid email address!"
+      })
+    }else{
+      const { abid, token } = JSON.parse(localStorage.getItem('user'));
+      const data = { ...activeFields, addressbook_id: abid };
+      axios.post('/ab/create', data, {
+          headers: { "Authorization": `Bearer ${token}` }
+        })
+        .then(res => { this.refreshAddressBook() })
+    }
   }
 
   updateContact = e => {
     e.preventDefault();
-    const { token } = JSON.parse(localStorage.getItem('user'));
-    const { id } = this.state.activeFields
-    axios.patch(`/Contacts/update/${id}`, { ...this.state.activeFields }, {
-        headers: {"Authorization": `Bearer ${token}`}
+    const { activeFields } = this.state;
+
+    if(activeFields.first_name===''){
+      this.setState({
+        errDialog: true,
+        errMsg: "First Name must be not empty!"
       })
-      .then(res => { this.refreshAddressBook() })
+    }else if(!activeFields.email.trim().match(/^([\.\w]{3,}@[a-zA-Z0-9]{3,}\.[a-zA-Z0-9]{2,}|)$/)){
+      this.setState({
+        errDialog: true,
+        errMsg: "Invalid email address!"
+      })
+    }else{
+      const { token } = JSON.parse(localStorage.getItem('user'));
+      const { id } = this.state.activeFields
+      axios.patch(`/Contacts/update/${id}`, { ...this.state.activeFields }, {
+          headers: {"Authorization": `Bearer ${token}`}
+        })
+        .then(res => { this.refreshAddressBook() })
+    }
   }
 
   deleteContact = e => {
@@ -150,14 +188,23 @@ export default class AddressBook extends Component {
     })
   }
 
+  cancelErrMsg = () => {
+    this.setState({
+      errDialog: false,
+      errMsg: ''
+    })
+  }
+
   sortFn = sort => {
     this.setState({ sort })
     this.refreshAddressBook()
   }
 
   searchHandleChange = e => {
-    const { value } = e.target;
-    this.setState({ search: value })
+    const search = e.target.value
+                    .replace(/^ /,'')
+                    .replace(/  /,' ');
+    this.setState({ search })
   }
 
   refreshGroup = () => {
@@ -189,6 +236,19 @@ export default class AddressBook extends Component {
             formType={this.state.formType}
           />
         }
+
+        <Dialog open={this.state.errDialog} onClose={this.cancelErrMsg} aria-labelledby="add-member-group">
+          <DialogTitle id="add-member-group">Error on Create</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{this.state.errMsg}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.cancelErrMsg} color="secondary">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Container maxWidth='lg' >
           <Paper style={{
             minHeight: '100vh',
