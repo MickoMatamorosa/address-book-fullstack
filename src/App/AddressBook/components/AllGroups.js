@@ -80,18 +80,18 @@ export default class AllGroups extends  Component{
           headers: {"Authorization": `Bearer ${token}`}
         })
         .then(res => res.data )
-        .then(res => {
-          res.map(g => {
-            return axios.get(`/groups/members/count/${abid}/${g.group_name}`, {
-              headers: {"Authorization": `Bearer ${token}`}
-            }).then(resc => {
-              g.count = resc.data[0].num 
-              return g;
-            })
-          })
+        // .then(res => {
+        //   res.map(g => {
+        //     return axios.get(`/groups/members/count/${abid}/${g.group_name}`, {
+        //       headers: {"Authorization": `Bearer ${token}`}
+        //     }).then(resc => {
+        //       g.count = resc.data[0].num 
+        //       return g;
+        //     })
+        //   })
 
-          return res;
-        })
+        //   return res;
+        // })
         .then(res => {
           this.setState({
             groups: res,
@@ -104,6 +104,7 @@ export default class AllGroups extends  Component{
 
   componentDidUpdate(props) {
     const { refresh } = this.props;
+    console.log(props.refresh, refresh)
     if (props.refresh !== refresh) {
       this.refreshGroupList();      
     }
@@ -117,9 +118,22 @@ export default class AllGroups extends  Component{
     axios.get(`/groups/${abid}`, {
         headers: {"Authorization": `Bearer ${token}`}
       })
+      .then(res => res.data )
+      // .then(res => {
+      //   res.map(g => {
+      //     return axios.get(`/groups/members/count/${abid}/${g.group_name}`, {
+      //       headers: {"Authorization": `Bearer ${token}`}
+      //     }).then(resc => {
+      //       g.count = resc.data[0].num 
+      //       return g;
+      //     })
+      //   })
+
+      //   return res;
+      // })
       .then(res => {
         this.setState({
-          groups: res.data,
+          groups: res,
           loading: false
         })
       })
@@ -144,12 +158,6 @@ export default class AllGroups extends  Component{
   }
 
   handleChange = panel => (event, newExpanded) => {
-    console.log(
-      this.state.openAddMember,
-      this.state.openDeleteGroup,
-      panel,
-      newExpanded
-    )
     this.setState({
       expanded : newExpanded ? panel : false
     });
@@ -197,6 +205,7 @@ export default class AllGroups extends  Component{
   render(){
     const { expanded, groups, openDeleteGroup, openAddMember, selectedGroup } = this.state;
     const { sort, sortFn } = this.props;
+    // console.log(groups)
 
     return (
       <div style={{marginTop: 20}}>
@@ -224,7 +233,10 @@ export default class AllGroups extends  Component{
                   <Grid container justify="space-between" alignItems="center">
                     <Grid item>
                       <Grid container justify="flex-start" alignItems="center">
-                        <Grid item>{group.group_name} ({group.count})</Grid>
+                        <Grid item>
+                          {group.group_name} 
+                          {/* ({group.count}) */}
+                        </Grid>
                       </Grid>
                     </Grid>
                     <Grid item>
