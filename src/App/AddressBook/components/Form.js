@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -36,7 +36,7 @@ export default function Form(props){
   return (
     <Dialog open={ formType !== '' } onClose={ cancel } aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{ dialogTitle }</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           {
             formType==='delete'
             ? `Are you sure you want to delete ${first_name}'s contact?`

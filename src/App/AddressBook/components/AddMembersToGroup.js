@@ -81,7 +81,7 @@ export default class AddMembers extends Component{
     return <Fragment>
             <Dialog open={openAddMember} onClose={this.cancelAdd} aria-labelledby="add-member-group">
               <DialogTitle id="add-member-group">{selectedGroup.group_name} Group</DialogTitle>
-              <DialogContent>
+              <DialogContent dividers>
                 { contacts.length > 0
                   ? <FormControl>
                       <InputLabel shrink htmlFor="select-multiple-native">

@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Card from '@material-ui/core/Card'
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -24,7 +25,6 @@ const useStyles = makeStyles(theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -34,12 +34,21 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    width: '100%',
+    marginTop: theme.spacing(2),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  cont: {
+    marginTop: 100
+  },
+  card: {
+    padding: 10
+  },
+  err: {
+    color: 'red'
+  }
 }));
 
 export default function SignIn() {
@@ -70,17 +79,18 @@ export default function SignIn() {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container className={classes.cont} component="main" maxWidth="xs">
       <CssBaseline />
-        <Dialog open={ loginErr } onClose={ () => setLoginErr(false) } aria-labelledby="form-dialog-title">
+      <Dialog open={ loginErr } onClose={ () => setLoginErr(false) } aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Log-In Error!</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers className={classes.err}>
             Invalid Username or Password!
         </DialogContent>
         <DialogActions>
           <Button onClick={ () => setLoginErr(false) } color="primary">Ok</Button>
         </DialogActions>
       </Dialog>
+      <Card className={classes.card}>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon/>
@@ -132,6 +142,7 @@ export default function SignIn() {
           </Grid>
         </form>
       </div>
+      </Card>
     </Container>
   );
 }

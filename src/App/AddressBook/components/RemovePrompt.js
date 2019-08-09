@@ -22,7 +22,7 @@ export default function AlertDialog({
       headers: {"Authorization": `Bearer ${token}`}
     })
     .then(res => { 
-      refreshFn();
+      refreshFn('ASC');
       handleClose();
     })
   }
@@ -36,7 +36,7 @@ export default function AlertDialog({
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">Remove from Group</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           <DialogContentText id="alert-dialog-description">
             Are you sure you want to remove {selected.first_name}  {selected.last_name} from the group
           </DialogContentText>

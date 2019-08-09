@@ -11,7 +11,7 @@ export default props => {
   return <Fragment>
           <Dialog open={props.openDeleteGroup} onClose={props.cancel} aria-labelledby="delete-group">
             <DialogTitle id="delete-group">{props.selectedGroup.group_name} Group</DialogTitle>
-            <DialogContent>
+            <DialogContent dividers>
               <DialogContentText>
                 Are you sure you want to delete this group
               </DialogContentText>

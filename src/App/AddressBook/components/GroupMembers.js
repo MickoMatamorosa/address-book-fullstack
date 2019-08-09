@@ -27,14 +27,12 @@ export default class GroupMembers extends Component{
 
     if(!abid) location = '/'
     else {
-      this.setState({ loading: true })
       axios.get(`/group/${abid}/members/${group_name}/${sort}`, {
           headers: {"Authorization": `Bearer ${token}`}
         })
         .then(res => {
           this.setState({
-            members: res.data,
-            loading: false
+            members: res.data
           })
         })
     }
@@ -43,7 +41,7 @@ export default class GroupMembers extends Component{
   componentDidUpdate(props) {
     const { refresh } = this.props;
     if (props.refresh !== refresh) {
-      this.refreshMembers();
+      this.refreshMembers('ASC');
     }
   }
 
@@ -57,7 +55,6 @@ export default class GroupMembers extends Component{
     .then(res => {
       this.setState({
         members: res.data,
-        loading: false,
         sort
       })
     })

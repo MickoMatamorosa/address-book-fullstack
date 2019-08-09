@@ -2,5 +2,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background-color: darkgray
+  background-image: url('./images/ab.jpg');
+  background-attachment: fixed;
+  background-origin: content-box;
+  background-size: cover;
 }

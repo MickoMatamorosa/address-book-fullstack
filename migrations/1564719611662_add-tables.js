@@ -24,8 +24,7 @@ exports.up = (pgm) => {
     user_id: {
       type: 'integer',
       notNull: true,
-      references: '"users"',
-      onDelete: 'cascade'
+      references: '"users"'
     },
   });
   
@@ -80,12 +79,10 @@ exports.up = (pgm) => {
     group_name: {
       type: 'text',
       notNull: true,
-      unique: true,
     },
     addressbook_id: {
       type: 'integer',
-      references: '"groups"',
-      onDelete: 'cascade'
+      references: '"addressbook"'
     },
     contacts_id: {
       type: 'integer',

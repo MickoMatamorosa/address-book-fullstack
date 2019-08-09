@@ -86,7 +86,8 @@ function deleteContact(req, res){
   const db = req.app.get('db');
   const id = parseInt(req.params.id)
 
-  db.destroy({id})
+  db.contacts
+    .destroy({id})
     .then(contact => res.status(200).json(contact))
     .catch(err => {
       console.error(err);

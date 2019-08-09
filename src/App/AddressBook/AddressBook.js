@@ -152,7 +152,10 @@ export default class AddressBook extends Component {
     axios.delete(`/Contacts/delete/${id}`, {
         headers: {"Authorization": `Bearer ${token}`}
       })
-      .then(res => { this.refreshAddressBook() })
+      .then(res => { 
+        this.refreshAddressBook();
+        this.refreshGroup();
+      })
   }
 
   createBtn = () => {
@@ -239,7 +242,7 @@ export default class AddressBook extends Component {
 
         <Dialog open={this.state.errDialog} onClose={this.cancelErrMsg} aria-labelledby="add-member-group">
           <DialogTitle id="add-member-group">Error on Create</DialogTitle>
-          <DialogContent>
+          <DialogContent dividers>
             <DialogContentText>{this.state.errMsg}</DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -262,6 +265,7 @@ export default class AddressBook extends Component {
                   search={this.state.search}
                   searchFn={this.searchHandleChange}
                   groupTab={this.state.groupTab}
+                  contacts={this.state.contacts}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -275,6 +279,7 @@ export default class AddressBook extends Component {
                   refresh={this.state.refresh}
                   refreshFn={this.refreshGroup}
                   handleGroupTab={this.handleGroupTab}
+                  search={this.state.search}
                 />
               </Grid>
             </Grid>

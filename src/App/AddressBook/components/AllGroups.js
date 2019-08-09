@@ -79,9 +79,22 @@ export default class AllGroups extends  Component{
       axios.get(`/groups/${abid}`, {
           headers: {"Authorization": `Bearer ${token}`}
         })
+        .then(res => res.data )
+        .then(res => {
+          res.map(g => {
+            return axios.get(`/groups/members/count/${abid}/${g.group_name}`, {
+              headers: {"Authorization": `Bearer ${token}`}
+            }).then(resc => {
+              g.count = resc.data[0].num 
+              return g;
+            })
+          })
+
+          return res;
+        })
         .then(res => {
           this.setState({
-            groups: res.data,
+            groups: res,
             loading: false,
             refresh: this.props.refresh
           })
@@ -131,6 +144,12 @@ export default class AllGroups extends  Component{
   }
 
   handleChange = panel => (event, newExpanded) => {
+    console.log(
+      this.state.openAddMember,
+      this.state.openDeleteGroup,
+      panel,
+      newExpanded
+    )
     this.setState({
       expanded : newExpanded ? panel : false
     });
@@ -178,7 +197,7 @@ export default class AllGroups extends  Component{
   render(){
     const { expanded, groups, openDeleteGroup, openAddMember, selectedGroup } = this.state;
     const { sort, sortFn } = this.props;
-    
+
     return (
       <div style={{marginTop: 20}}>
         <DeleteGroup 
@@ -196,13 +215,16 @@ export default class AllGroups extends  Component{
 
         { groups.map(group => {
             return (<ExpansionPanel key={group.id} square 
-                      expanded={expanded === group.group_name}
+                      expanded={! ( openDeleteGroup || openAddMember )
+                                ? expanded === group.group_name
+                                : false
+                              }
                       onChange={this.handleChange(group.group_name)}>
                 <ExpansionPanelSummary aria-controls={`${group.group_name}-content`} id={`${group.group_name}-header`}>
                   <Grid container justify="space-between" alignItems="center">
                     <Grid item>
                       <Grid container justify="flex-start" alignItems="center">
-                        <Grid item>{group.group_name}</Grid>
+                        <Grid item>{group.group_name} ({group.count})</Grid>
                       </Grid>
                     </Grid>
                     <Grid item>

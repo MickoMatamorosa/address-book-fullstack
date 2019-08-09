@@ -11,6 +11,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default function CreateGroup(props) {
   const [open, setOpen] = React.useState(false);
+  const [errOpen, setErrOpen] = React.useState(false);
   const [group_name, setGroupName] = React.useState('');
 
   function handleClickOpen() {
@@ -26,11 +27,35 @@ export default function CreateGroup(props) {
     e.preventDefault();
     const { abid, token } = JSON.parse(localStorage.getItem('user'));
     const data = { group_name, addressbook_id: abid };
-    axios.post('/groups/create', data, {
-        headers: { "Authorization": `Bearer ${token}` }
-      })
-      .then(res => { props.refreshFn() })
-    setOpen(false);
+
+    axios.get(`/groups/${abid}`, {
+      headers: {"Authorization": `Bearer ${token}`}
+    })
+    .then(res => {
+      return res.data.filter(group => 
+        group.group_name === group_name
+      ) > -1
+    })
+    .then(res => {
+      if(res){
+        axios.post('/groups/create', data, {
+            headers: { "Authorization": `Bearer ${token}` }
+          })
+          .then(res => { 
+            props.refreshFn();
+            setOpen(false);
+            setGroupName('');
+          })
+      } else {
+        setErrOpen(true);
+        setOpen(false);
+      }
+    })
+  }
+
+  function handleCloseErr(){
+    setErrOpen(false);
+    setOpen(true);
     setGroupName('');
   }
 
@@ -41,7 +66,7 @@ export default function CreateGroup(props) {
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-create-group">
         <DialogTitle id="form-dialog-title">Create Group</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           <TextField
             autoFocus
             margin="dense"
@@ -49,17 +74,30 @@ export default function CreateGroup(props) {
             label="Group Name"
             type="text"
             fullWidth
-            onChange={e => setGroupName(e.target.value)}
+            onChange={e => setGroupName(
+              e.target.value.replace(/^ /,'')
+                            .replace(/  /,' ')
+            )}
             value={group_name}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={createGroup} color="primary">
+          <Button variant="contained" color="primary" onClick={createGroup}>
             Create
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button variant="contained" color="secondary" onClick={handleClose}>
             Cancel
           </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={errOpen} onClose={handleCloseErr} aria-labelledby="group-name-error">
+        <DialogTitle id="group-name-error">Group Name Invalid!</DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText>Group name "{group_name}" already taken!</DialogContentText>
+          <DialogContentText>Please use other group name. Thank you!</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={handleCloseErr} color="secondary">Ok</Button>
         </DialogActions>
       </Dialog>
     </div>

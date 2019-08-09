@@ -28,6 +28,8 @@ massive({
 
   app.get('/login/addressbook/:uabid', users.addressbook);
 
+  app.get('/signup/:username', users.chkUName);
+
   app.use(protect)
 
   app.post('/ab/create', ab.createContacts);
@@ -41,6 +43,8 @@ massive({
   app.delete('/Contacts/delete/:id', ab.deleteContact);
 
   app.get('/groups/:abid', gr.allGroups);
+
+  app.get('/groups/members/count/:abid/:gName', gr.membersCount);
 
   app.post('/groups/create', gr.createGroup);
 

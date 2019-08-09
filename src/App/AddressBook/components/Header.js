@@ -5,14 +5,13 @@ import { InputBase, Typography, Fab, Grid } from '@material-ui/core/';
 import AddIcon from '@material-ui/icons/Add';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import SearchIcon from '@material-ui/icons/Search';
-import Group from '@material-ui/icons/Group';
 import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
 
 const useStyles = makeStyles(theme => ({
   header: {
-    color: '#bbb',
-    backgroundColor: '#1e90ff',
+    color: '#eee',
+    backgroundColor: '#0F0F0F',
     padding: 15
   },
   search: {
@@ -63,7 +62,13 @@ export default function Header(props){
       className={classes.header}
     >
       <Grid item xs={12} sm={12} md={6}>
-        <Typography variant="h2" gutterBottom>Address Book</Typography>
+        <Grid container
+        direction="row"
+        justify="flex-start"
+        alignItems="flex-end"
+        >
+          <Typography variant="h2" gutterBottom>Address Book</Typography>
+        </Grid>
       </Grid>
       <Grid item xs={12} sm={12} md={6}>
         <Grid container
@@ -74,22 +79,24 @@ export default function Header(props){
           { !props.groupTab && 
             <Fragment>
               <Grid item xs='auto'>
-                <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <SearchIcon />
+                { props.contacts.length !== 0 && 
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      placeholder="Search…"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                      inputProps={{ 'aria-label': 'search' }}
+                      value={props.search}
+                      onChange={props.searchFn}
+                      fullWidth
+                    />
                   </div>
-                  <InputBase
-                    placeholder="Search…"
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                    value={props.search}
-                    onChange={props.searchFn}
-                    fullWidth
-                  />
-                </div>
+                }
               </Grid>
               <Grid item xs='auto'>
                 <Fab 

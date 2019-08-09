@@ -18,23 +18,23 @@ export default function ContactItem(props){
       <TableCell>{ first_name }</TableCell>
       <TableCell>{ last_name }</TableCell>
       <Hidden smDown>
-        <TableCell>{ home_phone }</TableCell>
+        <TableCell>{ home_phone ? home_phone : 'None' }</TableCell>
       </Hidden>
       <Hidden xsDown>
-        <TableCell>{ mobile_phone }</TableCell>
+        <TableCell>{ mobile_phone ? mobile_phone : 'None' }</TableCell>
       </Hidden>
       <Hidden smDown>
-        <TableCell>{ work_phone }</TableCell>
+        <TableCell>{ work_phone ? work_phone : 'None' }</TableCell>
       </Hidden>
       <Hidden mdDown>
-        <TableCell>{ email }</TableCell>
+        <TableCell>{ email ? email : 'None' }</TableCell>
       </Hidden>
       <TableCell align="center">
         {
           removeBtn === undefined
           ? <Fragment>
-              <IconButton onClick={ () => deleteBtn(id) }><Delete /></IconButton>
               <IconButton onClick={ () => updateBtn(id) }><Edit /></IconButton>
+              <IconButton onClick={ () => deleteBtn(id) }><Delete /></IconButton>
             </Fragment>
           : <IconButton onClick={ () => removeBtn(id) }><Remove /></IconButton>
         }

@@ -81,8 +81,22 @@ function addressbook(req, res){
     });
 }
 
+function chkUName(req, res){
+  const db = req.app.get('db');
+  const username = req.params.username
+  
+  db.users
+    .find({username})
+    .then(post => res.status(200).json(post))
+    .catch(err => {
+      console.error(err);
+      res.status(500).end();
+    });
+}
+
 module.exports = {
   register,
   login,
   addressbook,
+  chkUName
 };

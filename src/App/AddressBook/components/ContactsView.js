@@ -7,12 +7,10 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 
 import ContactItem from './ContactItem';
 import TblHeader from './TblHeader';
@@ -35,12 +33,6 @@ function TabPanel(props) {
     </Typography>
   );
 }
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
 
 function a11yProps(index) {
   return {
@@ -80,13 +72,30 @@ export default function ContactsView(props) {
               direction="row"
               justify="center"
               alignItems="center"
+              style={{height:150}}
             >
-              <CircularProgress />
-              <Typography variant="h1">
-                Loading...
-              </Typography>
+              <Grid style={{marginRight:15}} item><CircularProgress/></Grid>
+              <Grid item>
+                <Typography variant="h2">Loading...</Typography>
+              </Grid>
             </Grid>)
-        : (<Table>
+        : props.contacts.length === 0
+          ? (<Grid container
+              direction="row"
+              justify="center"
+              alignItems="center"
+              style={{height:160}}
+            >
+              <Grid item>
+                <Typography variant="h3">
+                  { props.search
+                    ? "Search Not Found!"
+                    : "No Contacts Available"
+                  }
+                </Typography>
+              </Grid>
+            </Grid>)
+          : (<Table>
             <TblHeader 
               sort={props.sort} 
               sortFn={props.sortFn}
@@ -102,8 +111,7 @@ export default function ContactsView(props) {
                 })
               }
             </TableBody>
-          </Table>
-        )
+          </Table>)
       }
       </TabPanel>
       <TabPanel value={value} index={1} style={{overflow:'auto'}}>
@@ -120,3 +128,9 @@ export default function ContactsView(props) {
     </div>
   );
 }
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
